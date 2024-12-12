@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.ejs": "html",
+    "MLTable": "yaml",
+    "kyber768jni.h": "c",
+    "kyber768_ref_jni.h": "c"
+  }
+}
