@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:offpay/home_page.dart';
 
 class SendMoney extends StatelessWidget {
@@ -17,16 +18,20 @@ class SendMoney extends StatelessWidget {
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => HomePage()),
-                  );
+              context,
+              MaterialPageRoute(builder: (_) => HomePage()),
+            );
           },
         ),
       ),
       body: Center(
-        child: Text(
-          'Send Money Page',
-          style: TextStyle(fontSize: 18),
+        child: MobileScanner(
+          onDetect: (capture) {
+            final List<Barcode> barcodes = capture.barcodes;
+            for (final barcode in barcodes) {
+              print(barcode.rawValue ?? "No data found in QR code");
+            }
+          },
         ),
       ),
     );

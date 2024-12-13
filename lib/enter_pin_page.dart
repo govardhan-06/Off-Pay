@@ -27,52 +27,57 @@ class _EnterPinPageState extends State<EnterPinPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Icon and Welcome Message
-            Column(
-              children: [
-                Image.asset('assets/logo.png'),
-                SizedBox(height: 10),
-                Text(
-                  "Welcome to OFFPAY, please enter your PIN",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-            SizedBox(height: 50), // Add space between the top and text field
-            // PIN Input Field
-            TextField(
-              controller: _pinController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Enter PIN',
-                border: OutlineInputBorder(),
+      body: SingleChildScrollView( // Makes the page scrollable
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Icon and Welcome Message
+              Column(
+                children: [
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 150, // Set a fixed height for the image
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Welcome to OFFPAY, please enter your PIN",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            // Submit Button
-            ElevatedButton(
-              onPressed: () {
-                if (_pinController.text == _storedPin) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => HomePage()),
-                  );
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Invalid PIN')),
-                  );
-                }
-              },
-              child: Text('Submit'),
-            ),
-          ],
+              SizedBox(height: 50), // Add space between the top and text field
+              // PIN Input Field
+              TextField(
+                controller: _pinController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Enter PIN',
+                  border: OutlineInputBorder(),
+                ),
+                obscureText: true,
+              ),
+              SizedBox(height: 20),
+              // Submit Button
+              ElevatedButton(
+                onPressed: () {
+                  if (_pinController.text == _storedPin) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => HomePage()),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Invalid PIN')),
+                    );
+                  }
+                },
+                child: Text('Submit'),
+              ),
+            ],
+          ),
         ),
       ),
     );

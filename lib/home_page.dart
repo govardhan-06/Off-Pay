@@ -4,8 +4,45 @@ import 'package:offpay/recieve_money.dart';
 import 'package:offpay/send_money.dart';
 import 'package:offpay/settings.dart';
 import 'package:offpay/transaction_history.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+    _requestAllPermissions();
+  }
+
+  Future<void> _requestAllPermissions() async {
+    // List of permissions to request
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.location,
+      Permission.bluetooth,
+      Permission.bluetoothScan,
+      Permission.bluetoothAdvertise,
+      Permission.bluetoothConnect,
+      Permission.storage,
+      Permission.nearbyWifiDevices,
+      Permission.locationWhenInUse, // For API 32+
+    ].request();
+
+    // Check statuses and handle them
+    statuses.forEach((permission, status) {
+      if (status.isGranted) {
+        debugPrint('$permission granted');
+      } else if (status.isDenied) {
+        debugPrint('$permission denied');
+      } else if (status.isPermanentlyDenied) {
+        debugPrint('$permission permanently denied');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +72,6 @@ class HomePage extends StatelessWidget {
                 title: "SEND MONEY",
                 icon: Icons.camera_alt,
                 onTap: () {
-                  // Navigate to Send Money Page
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (_) => SendMoney()),
@@ -47,7 +83,6 @@ class HomePage extends StatelessWidget {
                 title: "RECEIVE MONEY",
                 icon: Icons.qr_code,
                 onTap: () {
-                  // Navigate to Receive Money Page
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (_) => RecMoney()),
@@ -59,7 +94,6 @@ class HomePage extends StatelessWidget {
                 title: "TRANSACTION HISTORY",
                 icon: IconData(0xf05db, fontFamily: 'MaterialIcons'),
                 onTap: () {
-                  // Navigate to Transaction History Page
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (_) => TransactionHistory()),
@@ -71,7 +105,6 @@ class HomePage extends StatelessWidget {
                 title: "SETTINGS",
                 icon: Icons.settings,
                 onTap: () {
-                  // Navigate to Settings Page
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (_) => SettingsPage()),
@@ -83,7 +116,6 @@ class HomePage extends StatelessWidget {
                 title: "PROFILE",
                 icon: Icons.person,
                 onTap: () {
-                  // Navigate to Profile Page
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (_) => Profile()),
@@ -91,7 +123,6 @@ class HomePage extends StatelessWidget {
                 },
               ),
               SizedBox(height: 20),
-              
             ],
           ),
         ),
