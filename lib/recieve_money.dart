@@ -3,6 +3,7 @@ import 'package:nearby_connections/nearby_connections.dart';
 import 'package:offpay/home_page.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class RecMoney extends StatefulWidget {
   @override
@@ -13,15 +14,27 @@ class _RecMoneyState extends State<RecMoney> {
   final Strategy strategy = Strategy.P2P_POINT_TO_POINT;
   String? advertiserId;
 
+
   @override
   void initState() {
     super.initState();
-    _startAdvertising();
+    //_startAdvertising();
   }
 
-  void _startAdvertising() async {
+
+Future<String?> getDeviceId() async {
+  final deviceInfo = DeviceInfoPlugin();
+  final androidInfo = await deviceInfo.androidInfo; // Get Android device info
+  return androidInfo.id; // Returns the Android ID (similar to Settings.Secure.ANDROID_ID)
+}
+
+
+  Future<void> _startAdvertising() async {
     await Permission.locationWhenInUse.request();
     // Start advertising
+    advertiserId = await getDeviceId();
+    print('Device Id is: $advertiserId');
+    print("STARTED ADVERTISING FOR DEVICES");
     bool advertising = await Nearby().startAdvertising(
       'Advertiser',
       strategy,
@@ -62,9 +75,7 @@ class _RecMoneyState extends State<RecMoney> {
     }
 
     // Get advertiser ID (local endpoint ID)
-    setState(() {
-      advertiserId = "1234";
-    });
+    
   }
 
   @override
@@ -80,39 +91,47 @@ class _RecMoneyState extends State<RecMoney> {
     super.deactivate();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Advertiser'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-             Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => HomePage()),
-                  );// Go back to the previous page
-          },
-        ),
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Advertiser'),
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => HomePage()),
+          );
+        },
       ),
-      body: Center(
-        child: advertiserId != null
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Scan this QR code to connect:',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  SizedBox(height: 20),
-                  QrImageView(
-                    data: advertiserId!,
-                    size: 200,
-                  ),
-                ],
-              )
-            : CircularProgressIndicator(),
+    ),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Scan this QR code to connect:',
+            style: TextStyle(fontSize: 16),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20),
+          FutureBuilder(
+            future: _startAdvertising(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return QrImageView(
+                  data: "$advertiserId",
+                  size: 300,
+                );
+              } else {
+                return CircularProgressIndicator();
+              }
+            },
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
