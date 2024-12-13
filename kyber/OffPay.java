@@ -2,7 +2,7 @@ import java.util.Arrays;
 
 class OffPay {
     static {
-        System.loadLibrary("kyber768_ref_jni");
+        System.loadLibrary("OffPayJNI");
     }
 
     // Declare the constants

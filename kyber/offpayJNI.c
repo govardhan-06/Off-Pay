@@ -5,7 +5,7 @@
 #include "randombytes.h"
 
 // JNI function to generate keypair
-JNIEXPORT void JNICALL Java_Kyber768Ref_generateKeypair(JNIEnv *env, jobject obj, jbyteArray publicKey, jbyteArray secretKey)
+JNIEXPORT void JNICALL Java_OffPay_generateKeypair(JNIEnv *env, jobject obj, jbyteArray publicKey, jbyteArray secretKey)
 {
     unsigned char pk[CRYPTO_PUBLICKEYBYTES];
     unsigned char sk[CRYPTO_SECRETKEYBYTES];
@@ -17,7 +17,7 @@ JNIEXPORT void JNICALL Java_Kyber768Ref_generateKeypair(JNIEnv *env, jobject obj
 }
 
 // JNI function to encrypt
-JNIEXPORT void JNICALL Java_Kyber768Ref_encrypt(JNIEnv *env, jobject obj, jbyteArray ciphertext, jbyteArray sharedKey, jbyteArray publicKey)
+JNIEXPORT void JNICALL Java_OffPay_encrypt(JNIEnv *env, jobject obj, jbyteArray ciphertext, jbyteArray sharedKey, jbyteArray publicKey)
 {
     unsigned char ct[CRYPTO_CIPHERTEXTBYTES];
     unsigned char key_b[CRYPTO_BYTES];
@@ -33,7 +33,7 @@ JNIEXPORT void JNICALL Java_Kyber768Ref_encrypt(JNIEnv *env, jobject obj, jbyteA
 }
 
 // JNI function to decrypt
-JNIEXPORT void JNICALL Java_Kyber768Ref_decrypt(JNIEnv *env, jobject obj, jbyteArray sharedKey, jbyteArray ciphertext, jbyteArray secretKey)
+JNIEXPORT void JNICALL Java_OffPay_decrypt(JNIEnv *env, jobject obj, jbyteArray sharedKey, jbyteArray ciphertext, jbyteArray secretKey)
 {
     unsigned char key_a[CRYPTO_BYTES];
     jbyte *sk = (*env)->GetByteArrayElements(env, secretKey, 0);
