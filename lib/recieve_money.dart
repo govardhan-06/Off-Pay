@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_connections/nearby_connections.dart';
+import 'package:offpay/globals.dart';
 import 'package:offpay/home_page.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 
 class RecMoney extends StatefulWidget {
   @override
@@ -12,7 +12,7 @@ class RecMoney extends StatefulWidget {
 
 class _RecMoneyState extends State<RecMoney> {
   final Strategy strategy = Strategy.P2P_POINT_TO_POINT;
-  String? advertiserId;
+  
 
 
   @override
@@ -22,17 +22,10 @@ class _RecMoneyState extends State<RecMoney> {
   }
 
 
-Future<String?> getDeviceId() async {
-  final deviceInfo = DeviceInfoPlugin();
-  final androidInfo = await deviceInfo.androidInfo; // Get Android device info
-  return androidInfo.id; // Returns the Android ID (similar to Settings.Secure.ANDROID_ID)
-}
-
 
   Future<void> _startAdvertising() async {
     await Permission.locationWhenInUse.request();
     // Start advertising
-    advertiserId = await getDeviceId();
     print('Device Id is: $advertiserId');
     print("STARTED ADVERTISING FOR DEVICES");
     bool advertising = await Nearby().startAdvertising(

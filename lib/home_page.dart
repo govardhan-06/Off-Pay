@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:offpay/globals.dart';
 import 'package:offpay/profile.dart';
 import 'package:offpay/recieve_money.dart';
 import 'package:offpay/send_money.dart';
 import 'package:offpay/settings.dart';
 import 'package:offpay/transaction_history.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -15,11 +17,22 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+     
     _requestAllPermissions();
   }
 
+  
+Future<String?> getDeviceId() async {
+  final deviceInfo = DeviceInfoPlugin();
+  final androidInfo = await deviceInfo.androidInfo; // Get Android device info
+  return androidInfo.id; // Returns the Android ID (similar to Settings.Secure.ANDROID_ID)
+}
+
+
   Future<void> _requestAllPermissions() async {
     // List of permissions to request
+    String? tempValue =  await getDeviceId();
+    advertiserId = "Off-$tempValue";
     Map<Permission, PermissionStatus> statuses = await [
       Permission.location,
       Permission.bluetooth,

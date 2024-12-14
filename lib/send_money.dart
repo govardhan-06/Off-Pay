@@ -29,7 +29,13 @@ class SendMoney extends StatelessWidget {
           onDetect: (capture) {
             final List<Barcode> barcodes = capture.barcodes;
             for (final barcode in barcodes) {
-              print(barcode.rawValue ?? "No data found in QR code");
+              final rawval = barcode.rawValue;
+              if(rawval != null && rawval.startsWith('off-')){
+              print(barcode.rawValue);}else{
+                ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Show valid OFF-PAY QR code')),
+              );
+              }
             }
           },
         ),
