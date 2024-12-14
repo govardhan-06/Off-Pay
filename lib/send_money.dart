@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:offpay/connectionpage.dart';
 import 'package:offpay/home_page.dart';
 
 class SendMoney extends StatelessWidget {
@@ -31,11 +32,16 @@ class SendMoney extends StatelessWidget {
             for (final barcode in barcodes) {
               final rawval = barcode.rawValue;
               if(rawval != null && rawval.startsWith('off-')){
+                Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => ConnectionPage()),
+            );
               print(barcode.rawValue);}else{
                 ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Show valid OFF-PAY QR code')),
               );
               }
+
             }
           },
         ),
