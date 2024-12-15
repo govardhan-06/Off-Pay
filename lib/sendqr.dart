@@ -3,8 +3,15 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:offpay/globals.dart';
 import 'package:offpay/home_page.dart';
 import 'package:offpay/payqr.dart';
+import 'package:offpay/scanfalcon.dart';
 
-class sendQr extends StatelessWidget{
+class sendQr extends StatefulWidget {
+  @override
+  _sendQrState createState() => _sendQrState();
+}
+
+class _sendQrState extends State<sendQr> {
+  bool _isScanning = true; // Add a flag to track scanning status
 
   @override
   Widget build(BuildContext context) {
@@ -30,23 +37,54 @@ class sendQr extends StatelessWidget{
       body: Center(
         child: MobileScanner(
           onDetect: (capture) {
+            if (!_isScanning) return; // Prevent further scanning if already stopped
+
             final List<Barcode> barcodes = capture.barcodes;
             for (final barcode in barcodes) {
               final rawval = barcode.rawValue;
-              if(rawval != null && rawval.startsWith("off-")){
+              if (rawval != null && rawval.startsWith("off-")) {
+                setState(() {
+                  _isScanning = false; // Stop scanning
+                });
+
                 print(rawval);
                 print(barcode.rawValue);
                 recPublicKey = rawval.replaceFirst("off-", "");
-                 Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => PayQR()),
-            );
-                }else{
-                ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Show valid OFF-PAY QR code')),
-              );
-              }
 
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Confirm Transaction"),
+                      content: Text("Do you want to proceed to the next page to confirm the transaction?"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => ScanFalcon()),
+                            );
+                          },
+                          child: Text("Yes"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            setState(() {
+                              _isScanning = true; // Resume scanning if "No" is pressed
+                            });
+                          },
+                          child: Text("No"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Show valid OFF-PAY QR code')),
+                );
+              }
             }
           },
         ),
@@ -54,4 +92,3 @@ class sendQr extends StatelessWidget{
     );
   }
 }
-

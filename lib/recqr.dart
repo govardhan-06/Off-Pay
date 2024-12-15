@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:offpay/scantrans.dart';
+import 'package:offpay/recfalconkey.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'globals.dart';
 
@@ -31,7 +31,7 @@ class RecQr extends StatelessWidget {
                       // Navigate to paymentSignSender() page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => scanTrans()),
+                        MaterialPageRoute(builder: (context) => RecFalconKey()),
                       );
                     },
                     child: Text("Scan Transaction"),

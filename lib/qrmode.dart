@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:offpay/home_page.dart';
+import 'package:offpay/recqr.dart';
 import 'package:offpay/sendqr.dart';
 
 class QrMode extends StatelessWidget {
@@ -70,6 +71,10 @@ class QrMode extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 // Handle Receive Money action
+                   Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => RecQr()),
+            );
                 print('Receive Money clicked');
               },
               child: Card(

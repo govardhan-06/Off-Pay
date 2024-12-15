@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:offpay/paymentsignsender.dart';
+import 'package:offpay/scansign.dart';
+
 import 'package:qr_flutter/qr_flutter.dart';
 import 'globals.dart';
 
-class sendTransactionKey extends StatelessWidget {
+class RecFalconKey extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Transaction QR Code"),
+        title: Text("Falcon key"),
       ),
       body: Center(
-        child: transactionData != null && transactionData!.isNotEmpty
+        child: recPublicKey != null && recPublicKey!.isNotEmpty
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   QrImageView(
-                    data: transactionData!,
+                    data: falconpublickey!,
                     size: 300,
                   ),
                   SizedBox(height: 20),
                   Text(
-                    "Scan the QR code to proceed with the transaction",
+                    "Scan the QR code for Falcon Key",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 16),
                   ),
@@ -31,15 +32,15 @@ class sendTransactionKey extends StatelessWidget {
                       // Navigate to paymentSignSender() page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Paymentsignsender()),
+                        MaterialPageRoute(builder: (context) => ScanSign()),
                       );
                     },
-                    child: Text("Proceed"),
+                    child: Text("Scan Transaction Details"),
                   ),
                 ],
               )
             : Text(
-                "No transaction data available",
+                "An Error Occured",
                 style: TextStyle(fontSize: 16),
               ),
       ),
