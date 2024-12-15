@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:offpay/home_page.dart';
 
-class SettingsPage extends StatelessWidget {
+class QrMode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          'Settings',
+          'QR MODE',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_connections/nearby_connections.dart';
+import 'package:offpay/paymentwindow.dart';
 
 class ConnectionPage extends StatefulWidget {
   @override
   _ConnectionPageState createState() => _ConnectionPageState();
 }
-
 class _ConnectionPageState extends State<ConnectionPage> {
   final Strategy strategy = Strategy.P2P_POINT_TO_POINT; // Choose your strategy
   final List<Map<String, String>> discoveredDevices = [];
@@ -27,7 +27,7 @@ class _ConnectionPageState extends State<ConnectionPage> {
       });
 
       await Nearby().startDiscovery(
-        'YourUserName', // Replace with a unique name or user ID
+        'Sender', // Replace with a unique name or user ID
         strategy,
         onEndpointFound: (id, name, serviceId) {
           setState(() {
@@ -57,13 +57,23 @@ class _ConnectionPageState extends State<ConnectionPage> {
   void connectToDevice(String endpointId) async {
     try {
       await Nearby().requestConnection(
-        'YourUserName', // Replace with your name or ID
+        'Device', // Replace with your name or ID
         endpointId,
         onConnectionInitiated: (id, info) {
           showSnackBar("Connection initiated with ${info.endpointName}");
         },
         onConnectionResult: (id, status) {
-          showSnackBar("Connection status: $status");
+          if(status == Status.CONNECTED){
+            showSnackBar("Connection successful with the intended device");
+            print("connection accepted and confirmed");
+            Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PaymentsPage(connectedEndpointId: id)),
+          );
+          }else{
+            showSnackBar("Connection FAILED with the intended device");
+            print("Connection failed to be accepted");
+          }
         },
         onDisconnected: (id) {
           showSnackBar("Disconnected from $id");

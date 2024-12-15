@@ -3,7 +3,7 @@ import 'package:offpay/globals.dart';
 import 'package:offpay/profile.dart';
 import 'package:offpay/recieve_money.dart';
 import 'package:offpay/send_money.dart';
-import 'package:offpay/settings.dart';
+import 'package:offpay/qrmode.dart';
 import 'package:offpay/transaction_history.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
               ),
               _buildOptionCard(
                 context,
-                title: "SEND MONEY",
+                title: "SEND MONEY (P2P)",
                 icon: Icons.camera_alt,
                 onTap: () {
                   Navigator.pushReplacement(
@@ -95,8 +95,8 @@ class _HomePageState extends State<HomePage> {
               ),
               _buildOptionCard(
                 context,
-                title: "RECEIVE MONEY",
-                icon: Icons.qr_code,
+                title: "RECEIVE MONEY (P2P)",
+                icon: Icons.qr_code_scanner,
                 onTap: () {
                   Navigator.pushReplacement(
                     context,
@@ -117,12 +117,12 @@ class _HomePageState extends State<HomePage> {
               ),
               _buildOptionCard(
                 context,
-                title: "SETTINGS",
-                icon: Icons.settings,
+                title: "QR MODE TRANSACTION",
+                icon: Icons.qr_code,
                 onTap: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => SettingsPage()),
+                    MaterialPageRoute(builder: (_) => QrMode()),
                   );
                 },
               ),

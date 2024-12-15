@@ -31,7 +31,8 @@ class SendMoney extends StatelessWidget {
             final List<Barcode> barcodes = capture.barcodes;
             for (final barcode in barcodes) {
               final rawval = barcode.rawValue;
-              if(rawval != null && rawval.startsWith('off-')){
+              if(rawval != null && rawval.startsWith("off-")){
+                print(rawval);
                 Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (_) => ConnectionPage()),
