@@ -4,6 +4,9 @@
     "MLTable": "yaml",
     "kyber768jni.h": "c",
     "kyber768_ref_jni.h": "c",
-    "offpay.h": "c"
+    "offpay.h": "c",
+    "falcon512_header.h": "c",
+    "falconsign.h": "c",
+    "compare": "cpp"
   }
 }
