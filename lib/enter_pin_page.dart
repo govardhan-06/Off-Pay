@@ -70,8 +70,8 @@ class _EnterPinPageState extends State<EnterPinPage> {
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Invalid PIN')),
-                    );
+                SnackBar(content: Text('Invalid PIN'), backgroundColor: Colors.red,),
+              );
                   }
                 },
                 child: Text('Submit'),
