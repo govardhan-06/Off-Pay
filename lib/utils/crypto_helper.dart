@@ -12,12 +12,48 @@ typedef KyberEncFuncDart = int Function(ffi.Pointer<ffi.Uint8> ct, ffi.Pointer<f
 typedef KyberDecFunc = ffi.Int32 Function(ffi.Pointer<ffi.Uint8> ss, ffi.Pointer<ffi.Uint8> ct, ffi.Pointer<ffi.Uint8> sk);
 typedef KyberDecFuncDart = int Function(ffi.Pointer<ffi.Uint8> ss, ffi.Pointer<ffi.Uint8> ct, ffi.Pointer<ffi.Uint8> sk);
 
+typedef FalconKeypairFunc = ffi.Int32 Function(
+  ffi.Pointer<ffi.Uint8> pk,  
+  ffi.Pointer<ffi.Uint8> sk   
+);
+
+typedef FalconKeypairFuncDart = int Function(
+  ffi.Pointer<ffi.Uint8> pk,  // Pointer to public key output
+  ffi.Pointer<ffi.Uint8> sk   // Pointer to secret key output
+);
+
 // Define FFI type signatures for Falcon functions
 typedef FalconSignFunc = ffi.Int32 Function(ffi.Pointer<ffi.Uint8> sig, ffi.Pointer<ffi.Uint8> siglen, ffi.Pointer<ffi.Uint8> m, ffi.Size mlen, ffi.Pointer<ffi.Uint8> sk);
 typedef FalconSignFuncDart = int Function(ffi.Pointer<ffi.Uint8> sig, ffi.Pointer<ffi.Uint8> siglen, ffi.Pointer<ffi.Uint8> m, int mlen, ffi.Pointer<ffi.Uint8> sk);
 
 typedef FalconVerifyFunc = ffi.Int32 Function(ffi.Pointer<ffi.Uint8> sig, ffi.Size siglen, ffi.Pointer<ffi.Uint8> m, ffi.Size mlen, ffi.Pointer<ffi.Uint8> pk);
 typedef FalconVerifyFuncDart = int Function(ffi.Pointer<ffi.Uint8> sig, int siglen, ffi.Pointer<ffi.Uint8> m, int mlen, ffi.Pointer<ffi.Uint8> pk);
+
+typedef FalconDynamicSignFunc = ffi.Int32 Function(
+  ffi.Pointer<ffi.Void> rng,         // Pointer to RNG context (shake256_context)
+  ffi.Pointer<ffi.Void> sig,         // Pointer to the signature buffer
+  ffi.Pointer<ffi.Uint8> sigLen,     // Pointer to signature length output
+  ffi.Int32 sigType,                 // Signature type
+  ffi.Pointer<ffi.Void> privkey,     // Pointer to private key
+  ffi.Size privkeyLen,               // Private key length
+  ffi.Pointer<ffi.Void> data,        // Pointer to the message data
+  ffi.Size dataLen,                  // Message length
+  ffi.Pointer<ffi.Void> tmp,         // Pointer to temporary workspace
+  ffi.Size tmpLen                    // Temporary workspace length
+);
+
+typedef FalconDynamicSignFuncDart = int Function(
+  ffi.Pointer<ffi.Void> rng,         // Pointer to RNG context (shake256_context)
+  ffi.Pointer<ffi.Void> sig,         // Pointer to the signature buffer
+  ffi.Pointer<ffi.Uint8> sigLen,     // Pointer to signature length output
+  int sigType,                       // Signature type
+  ffi.Pointer<ffi.Void> privkey,     // Pointer to private key
+  int privkeyLen,                    // Private key length
+  ffi.Pointer<ffi.Void> data,        // Pointer to the message data
+  int dataLen,                       // Message length
+  ffi.Pointer<ffi.Void> tmp,         // Pointer to temporary workspace
+  int tmpLen                         // Temporary workspace length
+);
 
 class CryptoFFIHelper {
   static final ffi.DynamicLibrary _kyberLib = ffi.DynamicLibrary.open('libpqcrystals_kyber768_ref.so');
@@ -51,6 +87,19 @@ class CryptoFFIHelper {
     return kyberDec(ss, ct, sk);
   }
 
+   static int falconKeypair(
+    ffi.Pointer<ffi.Uint8> pk,
+    ffi.Pointer<ffi.Uint8> sk,
+  ) {
+    // Lookup the function and expose it
+    final FalconKeypairFuncDart falconKeypair = _falconLib
+        .lookup<ffi.NativeFunction<FalconKeypairFunc>>('PQCLEAN_FALCON512_CLEAN_crypto_sign_keypair')
+        .asFunction();
+
+    // Call the function
+    return falconKeypair(pk, sk);
+  }
+
   // Expose Falcon functions
   static int falconSign(ffi.Pointer<ffi.Uint8> sig, ffi.Pointer<ffi.Uint8> siglen, ffi.Pointer<ffi.Uint8> m, int mlen, ffi.Pointer<ffi.Uint8> sk) {
     final FalconSignFuncDart falconSign = _falconLib
@@ -64,5 +113,28 @@ class CryptoFFIHelper {
         .lookup<ffi.NativeFunction<FalconVerifyFunc>>('PQCLEAN_FALCON512_CLEAN_crypto_sign_verify')
         .asFunction();
     return falconVerify(sig, siglen, m, mlen, pk);
+  }
+
+  static int falconDynamicSign(
+    ffi.Pointer<ffi.Void> rng,
+    ffi.Pointer<ffi.Void> sig,
+    ffi.Pointer<ffi.Uint8> sigLen,
+    int sigType,
+    ffi.Pointer<ffi.Void> privkey,
+    int privkeyLen,
+    ffi.Pointer<ffi.Void> data,
+    int dataLen,
+    ffi.Pointer<ffi.Void> tmp,
+    int tmpLen,
+  ) {
+    // Lookup the function and expose it
+    final FalconDynamicSignFuncDart falconDynamicSign = _falconLib
+        .lookup<ffi.NativeFunction<FalconDynamicSignFunc>>('falcon_sign_dyn')
+        .asFunction();
+
+    // Call the function
+    return falconDynamicSign(
+      rng, sig, sigLen, sigType, privkey, privkeyLen, data, dataLen, tmp, tmpLen,
+    );
   }
 }

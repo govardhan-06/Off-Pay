@@ -37,8 +37,23 @@ class _SetPinPageState extends State<SetPinPage> {
     final secretKeyHex = bytesToHex(secretKey);
     await _secureStorage.write(key: 'publickeyhex', value: publicKeyHex);
     await _secureStorage.write(key: 'secretkeyhex', value: secretKeyHex);
-    
+
+    final fpk = malloc<ffi.Uint8>(1184); 
+    final fsk = malloc<ffi.Uint8>(2400);
+
+    await CryptoFFIHelper.falconKeypair(fpk, fsk);
+    falconPublicPointer = fpk;
+    falconSecretPointer = fsk;
+    final falpublickey = fpk.asTypedList(897);
+    final falsecretkey = fpk.asTypedList(1281);
+    final falpublichex = bytesToHex(falpublickey);
+    final falsecrethex = bytesToHex(falsecretkey);
+    await _secureStorage.write(key: 'falpublichex', value: falpublichex);
+    await _secureStorage.write(key: 'falsecrethex', value: falsecrethex);
+
+
   }
+
 
   @override
   Widget build(BuildContext context) {
