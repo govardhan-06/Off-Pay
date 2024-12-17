@@ -4,6 +4,7 @@ import 'package:offpay/globals.dart';
 import 'package:offpay/home_page.dart';
 import 'package:offpay/payqr.dart';
 import 'package:offpay/scanfalcon.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart'; 
 
 class sendQr extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class sendQr extends StatefulWidget {
 
 class _sendQrState extends State<sendQr> {
   bool _isScanning = true; 
-
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,21 +37,14 @@ class _sendQrState extends State<sendQr> {
       ),
       body: Center(
         child: MobileScanner(
-          onDetect: (capture) {
+          onDetect: (capture) async{
             if (!_isScanning) return; // Prevent further scanning if already stopped
 
             final List<Barcode> barcodes = capture.barcodes;
             for (final barcode in barcodes) {
               final rawval = barcode.rawValue;
-              if (rawval != null && rawval.startsWith("off-")) {
-                setState(() {
-                  _isScanning = false; // Stop scanning
-                });
-
-                print(rawval);
-                print(barcode.rawValue);
-                recPublicKey = rawval.replaceFirst("off-", "");
-
+                recPublicKey = rawval;
+                await _secureStorage.write(key: 'recPublicKey', value: recPublicKey);
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -80,11 +74,7 @@ class _sendQrState extends State<sendQr> {
                     );
                   },
                 );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Show valid OFF-PAY QR code')),
-                );
-              }
+              
             }
           },
         ),
