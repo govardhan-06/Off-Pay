@@ -51,6 +51,7 @@ async def get_public_key():
     except:
         return JSONResponse(content={"error":"Failed to get public key"},status_code=500)
 
+
 @app.post("/transactions/encrypted")
 async def create_transaction(encrypted_transaction: str):
     '''
@@ -73,6 +74,26 @@ async def create_transaction(encrypted_transaction: str):
         # return JSONResponse(content={"ciphertext":ciphertext,"decrypted_transaction":decrypted_transaction},status_code=200)
     except Exception as e:
         return JSONResponse(content={"error": f"Failed to sync transaction: {str(e)}"}, status_code=500)
+
+@app.post("/link-account")
+async def link_account(account_number: str):
+    '''
+    This route is used to link a bank account.
+    '''
+    try:
+        bank_account_data = {
+            "account_number": account_number,
+            "account_holder_name": account_holder_name,
+            "phone_number": phone_number,
+            "branch": branch
+        }
+
+        logging.info(f"Linking account: {bank_account_data}")
+        
+        return JSONResponse(content={"message": "Bank account linked successfully", "data": bank_account_data}, status_code=200)
+    except Exception as e:
+        return JSONResponse(content={"error": f"Failed to link bank account: {str(e)}"}, status_code=500)
+
 
 if __name__=="__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
