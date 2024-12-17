@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blue Horizon Bank</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #f0f4f8;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      header {
+        background: linear-gradient(90deg, #004aad, #007bff);
+        color: white;
+        padding: 2rem 0;
+        text-align: center;
+        border-bottom: 5px solid #003a89;
+      }
+
+      header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      header p {
+        font-size: 1.2rem;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.8rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: #004aad;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s;
+      }
+
+      input[type="text"]:focus {
+        border-color: #004aad;
+        outline: none;
+      }
+
+      button {
+        display: block;
+        width: 100%;
+        background: #004aad;
+        color: white;
+        border: none;
+        padding: 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+
+      button:hover {
+        background: #003a89;
+      }
+
+      .result {
+        margin-top: 2rem;
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .result h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: #004aad;
+        text-align: center;
+      }
+
+      .result .info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+
+      .result .info div {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+
+      .result .info div strong {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        color: #333;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding: 1rem;
+        background: #f4f4f9;
+        color: #777;
+        border-top: 3px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Blue Horizon Bank</h1>
+      <p>Your Trusted Financial Partner</p>
+    </header>
+
+    <div class="container">
+      <form id="accountForm">
+        <div class="form-group">
+          <label for="uid">User ID:</label>
+          <input
+            type="text"
+            id="uid"
+            name="uid"
+            placeholder="Enter your User ID"
+            required
+          />
+        </div>
+        <button type="submit">Get Account Info</button>
+      </form>
+
+      <div class="result" id="result" style="display: none">
+        <h2>Account Information</h2>
+        <div class="info">
+          <div>
+            <strong>Account Holder Name:</strong>
+            <span id="accountHolderName"></span>
+          </div>
+          <div>
+            <strong>Account Number:</strong> <span id="accountNumber"></span>
+          </div>
+          <div><strong>Balance:</strong> ₹<span id="balance"></span></div>
+          <div>
+            <strong>Phone Number:</strong> <span id="phoneNumber"></span>
+          </div>
+          <div><strong>Branch:</strong> <span id="branch"></span></div>
+          <div>
+            <strong>Account Created At:</strong> <span id="createdAt"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2024 Blue Horizon Bank. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+      document
+        .getElementById("accountForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const uid = document.getElementById("uid").value;
+          const resultDiv = document.getElementById("result");
+          const accountHolderName =
+            document.getElementById("accountHolderName");
+          const accountNumber = document.getElementById("accountNumber");
+          const balance = document.getElementById("balance");
+          const phoneNumber = document.getElementById("phoneNumber");
+          const branch = document.getElementById("branch");
+          const createdAt = document.getElementById("createdAt");
+
+          try {
+            const response = await fetch(
+              `https://bankserver.azurewebsites.net/get-account-info?uid=${encodeURIComponent(
+                uid
+              )}`,
+              {
+                method: "POST",
+                headers: {
+                  accept: "application/json",
+                },
+                body: "",
+              }
+            );
+
+            if (response.ok) {
+              const data = await response.json();
+              accountHolderName.textContent = data.account_holder_name;
+              accountNumber.textContent = data.account_number;
+              balance.textContent = data.balance.toLocaleString();
+              phoneNumber.textContent = data.phone_number;
+              branch.textContent = data.branch;
+              createdAt.textContent = new Date(
+                data.created_at
+              ).toLocaleString();
+              resultDiv.style.display = "block";
+            } else {
+              resultDiv.style.display = "none";
+              alert("Error: Unable to fetch account information.");
+            }
+          } catch (error) {
+            resultDiv.style.display = "none";
+            alert("Error: " + error.message);
+          }
+        });
+    </script>
+  </body>
+</html>

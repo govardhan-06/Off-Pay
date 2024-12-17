@@ -1,1 +1,5 @@
 .vscode/
+offpay/
+logs/
+Bank_Server.egg-info/
+__pycache__
