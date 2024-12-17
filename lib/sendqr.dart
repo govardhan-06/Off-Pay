@@ -11,7 +11,7 @@ class sendQr extends StatefulWidget {
 }
 
 class _sendQrState extends State<sendQr> {
-  bool _isScanning = true; // Add a flag to track scanning status
+  bool _isScanning = true; 
 
   @override
   Widget build(BuildContext context) {
