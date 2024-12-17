@@ -200,7 +200,7 @@
 
           try {
             const response = await fetch(
-              `http://localhost:8001/get-account-info?uid=${encodeURIComponent(
+              `https://bankserver.azurewebsites.net/get-account-info?uid=${encodeURIComponent(
                 uid
               )}`,
               {
