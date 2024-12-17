@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'home_page.dart'; // Import the HomePage
+import 'package:offpay/globals.dart';
+import 'home_page.dart'; 
+import 'dart:ffi' as ffi;
+import 'package:ffi/ffi.dart';
+import 'package:offpay/utils/crypto_helper.dart';
+import 'dart:typed_data';
 
 class SetPinPage extends StatefulWidget {
   @override
@@ -11,9 +16,28 @@ class _SetPinPageState extends State<SetPinPage> {
   final TextEditingController _pinController = TextEditingController();
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
+    String bytesToHex(Uint8List bytes) {
+  return bytes.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join('');
+}
+
   Future<void> savePin(String pin) async {
     // Save the PIN securely in encrypted storage
     await _secureStorage.write(key: 'user_pin', value: pin);
+    final pk = malloc<ffi.Uint8>(1184); 
+    final sk = malloc<ffi.Uint8>(2400);
+
+    await CryptoFFIHelper.kyberKeypair(pk, sk);
+
+    publicKeyPointer = pk;
+    secretKeyPointer = sk;
+
+    final publicKey = pk.asTypedList(1184);
+    final secretKey = sk.asTypedList(2400);
+    final publicKeyHex = bytesToHex(publicKey);
+    final secretKeyHex = bytesToHex(secretKey);
+    await _secureStorage.write(key: 'publickeyhex', value: publicKeyHex);
+    await _secureStorage.write(key: 'secretkeyhex', value: secretKeyHex);
+    
   }
 
   @override

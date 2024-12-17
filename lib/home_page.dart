@@ -9,6 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:location/location.dart';
 
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -19,7 +20,10 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _requestAllPermissions();
+    
   }
+
+
 
   Future<String?> getDeviceId() async {
     final deviceInfo = DeviceInfoPlugin();
