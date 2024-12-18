@@ -1,14 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:offpay/home_page.dart';
+import 'package:offpay/signature.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'globals.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class Paymentsignsender extends StatelessWidget {
+class Paymentsignsender extends StatefulWidget {
+  @override
+  _PaymentsignsenderState createState() => _PaymentsignsenderState();
+}
+
+class _PaymentsignsenderState extends State<Paymentsignsender> {
+  final FlutterSecureStorage secureStorage = FlutterSecureStorage();
+  String? paymentsign;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPaymentSign();
+  }
+
+  // Method to read cipherTextHex from secure storage
+  void _loadPaymentSign() async {
+    final cipherTextHex = await secureStorage.read(key: 'cypherTextHex');
+    
+    setState(() {
+      paymentsign = cipherTextHex; // Update the paymentsign value and trigger a rebuild
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Payment Signature QR CODE"),
+        title: Text("Cipher Text"),
       ),
       body: Center(
         child: paymentsign != null && paymentsign!.isNotEmpty
@@ -17,7 +42,7 @@ class Paymentsignsender extends StatelessWidget {
                 children: [
                   QrImageView(
                     data: paymentsign!,
-                    size: 300,
+                    size: 350,
                   ),
                   SizedBox(height: 20),
                   Text(
@@ -28,16 +53,12 @@ class Paymentsignsender extends StatelessWidget {
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
+                        MaterialPageRoute(builder: (context) => Signature()),
                       );
-                       ScaffoldMessenger.of(context).showSnackBar(
-                       SnackBar(content: Text('Payment Successful'), backgroundColor: Color.fromRGBO(55, 255, 0, 0.992),),
-              );
                     },
-                    child: Text("EXIT"),
+                    child: Text("Next"),
                   ),
                 ],
               )

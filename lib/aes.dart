@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:offpay/home_page.dart';
-import 'package:offpay/scansign.dart';
+import 'package:offpay/recfalconkey.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'globals.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class RecFalconKey extends StatefulWidget {
+class AES extends StatefulWidget {
   @override
-  _RecFalconKeyState createState() => _RecFalconKeyState();
+  _AESState createState() => _AESState();
 }
 
-class _RecFalconKeyState extends State<RecFalconKey> {
+class _AESState extends State<AES> {
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
-  String? falconPublicKey;
+  String? aeskeyhex;
 
   @override
   void initState() {
     super.initState();
-    _loadFalconPublicKey();
+    _loadPaymentSign();
   }
 
-  // Method to read falconPublicKey from secure storage
-  void _loadFalconPublicKey() async {
-    final key = await secureStorage.read(key: 'falpublichex');
+  // Method to read cipherTextHex from secure storage
+  void _loadPaymentSign() async {
+    final aeskey = await secureStorage.read(key: 'aeskey');
+    
     setState(() {
-      falconPublicKey = key;
+      aeskeyhex = aeskey; // Update the paymentsign value and trigger a rebuild
     });
   }
 
@@ -32,43 +33,37 @@ class _RecFalconKeyState extends State<RecFalconKey> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Falcon Key"),
+        title: Text("AES Encrypted Key"),
       ),
       body: Center(
-        child: falconPublicKey != null && falconPublicKey!.isNotEmpty
+        child: paymentsign != null && paymentsign!.isNotEmpty
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   QrImageView(
-                    data: falconPublicKey!,
-                    size: 300,
+                    data: aeskeyhex!,
+                    size: 350,
                   ),
                   SizedBox(height: 20),
                   Text(
-                    "Scan the QR code for Falcon Key",
+                    "Scan the QR code to confirm the Payment",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Payment Successful"),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
+                        MaterialPageRoute(builder: (context) => RecFalconKey()),
                       );
                     },
-                    child: Text("Finish Transaction"),
+                    child: Text("Next"),
                   ),
                 ],
               )
             : Text(
-                "An Error Occurred",
+                "No signature available, payment failed try again",
                 style: TextStyle(fontSize: 16),
               ),
       ),

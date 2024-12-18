@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:offpay/globals.dart';
 import 'package:offpay/home_page.dart';
-import 'package:offpay/scanaes.dart';
+import 'package:offpay/utils/scanfalcon.dart';
 
-class ScanSign extends StatelessWidget{
+class ScanAES extends StatelessWidget{
   String? scannedSign = "";
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class ScanSign extends StatelessWidget{
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          'Scan Signature',
+          'Scan AES Key',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -38,7 +38,7 @@ class ScanSign extends StatelessWidget{
                 print(barcode.rawValue);
                  Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (_) => ScanAES()),
+                MaterialPageRoute(builder: (_) => ScanFalcon()),
             );
             }
           },

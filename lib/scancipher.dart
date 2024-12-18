@@ -3,14 +3,15 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:offpay/globals.dart';
 import 'package:offpay/home_page.dart';
 import 'package:offpay/payqr.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart'; 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:offpay/scansign.dart'; 
 
-class sendQr extends StatefulWidget {
+class ScanCipher extends StatefulWidget {
   @override
-  _sendQrState createState() => _sendQrState();
+  _ScanCipherState createState() => _ScanCipherState();
 }
 
-class _sendQrState extends State<sendQr> {
+class _ScanCipherState extends State<ScanCipher> {
   bool _isScanning = true; 
   final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   @override
@@ -19,7 +20,7 @@ class _sendQrState extends State<sendQr> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          'Scan QR',
+          'Scan Cipher',
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
@@ -35,6 +36,7 @@ class _sendQrState extends State<sendQr> {
         ),
       ),
       body: Center(
+      
         child: MobileScanner(
           onDetect: (capture) async{
             if (!_isScanning) return; // Prevent further scanning if already stopped
@@ -42,8 +44,8 @@ class _sendQrState extends State<sendQr> {
             final List<Barcode> barcodes = capture.barcodes;
             for (final barcode in barcodes) {
               final rawval = barcode.rawValue;
-                recPublicKey = rawval;
-                await _secureStorage.write(key: 'recPublicKey', value: recPublicKey);
+                //recPublicKey = rawval;
+                //await _secureStorage.write(key: 'recPublicKey', value: recPublicKey);
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -55,7 +57,7 @@ class _sendQrState extends State<sendQr> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => PayQR()),
+                              MaterialPageRoute(builder: (_) => ScanSign()),
                             );
                           },
                           child: Text("Yes"),

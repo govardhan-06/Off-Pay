@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'; // Import the package
 import 'package:offpay/recfalconkey.dart';
+import 'package:offpay/scancipher.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'globals.dart';
 
@@ -54,10 +55,10 @@ class _RecQrState extends State<RecQr> {
                       // Navigate to paymentSignSender() page
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => RecFalconKey()),
+                        MaterialPageRoute(builder: (context) => ScanCipher()),
                       );
                     },
-                    child: Text("Scan Transaction"),
+                    child: Text("Scan Cipher"),
                   ),
                 ],
               )

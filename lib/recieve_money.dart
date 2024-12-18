@@ -4,8 +4,7 @@ import 'package:offpay/globals.dart';
 import 'package:offpay/home_page.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-
+import 'package:flutter_secure_storage/flutter_secure_storage.dart'; // Import the package
 
 class RecMoney extends StatefulWidget {
   @override
@@ -15,11 +14,20 @@ class RecMoney extends StatefulWidget {
 class _RecMoneyState extends State<RecMoney> {
   final Strategy strategy = Strategy.P2P_POINT_TO_POINT;
   String receivedPayment = ""; // Variable to store received payment amount
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
   
   @override
   void initState() {
     super.initState();
     //_startAdvertising();
+    _loadPublicKey();  
+
+  }
+    Future<void> _loadPublicKey() async {
+    String? publicKey = await _secureStorage.read(key: 'publickeyhex');
+    setState(() {
+      recPublicKey = publicKey;
+    });
   }
 
 Future<void> _startAdvertising() async {
@@ -154,7 +162,7 @@ Future<bool> _showConnectionDialog(String id) async {
                 if (snapshot.connectionState == ConnectionState.done) {
                
                   return QrImageView(
-                    data: "off-1234",
+                    data: recPublicKey!,
                     size: 300,
                   );
                 } else {
